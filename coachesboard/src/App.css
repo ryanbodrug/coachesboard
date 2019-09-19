@@ -4,11 +4,10 @@
 }
 
 .BoardCanvas {
+  background-color: blue;
   background-image: url('./img//field.jpg');
-  background-size:100%;
+  background-size: 100%;
   background-repeat: no-repeat;
-  width: fit-content;
-  height:fit-content; 
   touch-action: none;
 }
 

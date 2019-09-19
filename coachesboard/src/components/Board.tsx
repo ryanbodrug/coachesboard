@@ -169,24 +169,15 @@ export class Board extends React.Component<BoardProps,BoardState>
     onResize(){
         if(this.canvas)
         {
-            var canvasRatio = this.canvas.height / this.canvas.width;
-            let windowRatio = window.innerHeight / window.innerWidth;
-            let width;
-            let height;
+            var fieldMinWidth = 330;  //110 yds x 3
+            var fieldMinHeight = 180; //60 yds x 3
 
-            if (windowRatio < canvasRatio) {
-                height = window.innerHeight;
-                width = height / canvasRatio;
-            } else {
-                width = window.innerWidth;
-                height = width * canvasRatio;
-            }
+            let width = (window.innerWidth > fieldMinWidth) ? window.innerWidth : fieldMinWidth;
+            let height = (window.innerHeight > fieldMinHeight) ? window.innerHeight : fieldMinHeight;
 
-          //  this.canvas.style.width = width + 'px';
-          //  this.canvas.style.height = height + 'px';
-          this.canvas.width = width;
-          this.canvas.height = height;
-          this.draw();
+            this.canvas.width = width;
+            this.canvas.height = height;
+            this.draw();
         }
     }
 
