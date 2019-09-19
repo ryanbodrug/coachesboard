@@ -137,25 +137,29 @@ export class Board extends React.Component<BoardProps,BoardState>
         if(this.canvas && this.activeMotion)
         {
             let ctx = this.canvas.getContext("2d");
-            if(ctx)
-            {   
-                ctx.beginPath();
-                this.activeMotion.frames.forEach((frame:MotionFrame, index:number) =>
-                {
-                    if(ctx && this.canvas)
-                    {   
-                        let x = frame.position.x * this.canvas.width;
-                        let y = frame.position.y * this.canvas.height;
-                        if(index === 0)
-                        {
-                            ctx.moveTo(x,y);
+              
+            this.motionList.forEach((motion:Motion, index:number) =>
+            {
+                if(ctx)
+                { 
+                    ctx.beginPath();
+                    motion.frames.forEach((frame:MotionFrame, index:number) =>
+                    {
+                        if(ctx && this.canvas)
+                        {   
+                            let x = frame.position.x * this.canvas.width;
+                            let y = frame.position.y * this.canvas.height;
+                            if(index === 0)
+                            {
+                                ctx.moveTo(x,y);
+                            }
+    
+                            ctx.lineTo(x,y);
+                            ctx.stroke();
                         }
-
-                       ctx.lineTo(x,y);
-                    }
-                });
-                ctx.stroke();
-            }
+                    });
+                }
+            });  
             console.log("Draw finished forcing update")
             this.forceUpdate();  
         }
