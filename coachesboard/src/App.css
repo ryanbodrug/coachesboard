@@ -1,29 +1,16 @@
 .App {
-  text-align: center;
-  size:100%
+  background-color: #282c34;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
 .BoardCanvas {
   background-color: blue;
   background-image: url('./img//field.jpg');
-  background-size: 100%;
+  background-size: contain;
   background-repeat: no-repeat;
+  background-attachment: scroll;
   touch-action: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 

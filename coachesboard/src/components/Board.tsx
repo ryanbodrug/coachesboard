@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import { ENGINE_METHOD_DSA } from 'constants';
 import { number } from 'prop-types';
 
-
 class Point
 {
     x: number;
@@ -95,6 +94,12 @@ interface BoardState{
 
 }
 
+const FIELD_MIN_WIDTH = 330;  //110 yds x 3
+const FIELD_MIN_HEIGHT = 180; //60 yds x 3
+const IMAGE_WIDTH = 1100;
+const IMAGE_HEIGHT = 600; 
+const IMAGE_ASPECT_RATIO = IMAGE_WIDTH / IMAGE_HEIGHT;
+
 export class Board extends React.Component<BoardProps,BoardState> 
 {
     private canvasRef:React.RefObject<HTMLCanvasElement>;
@@ -103,12 +108,22 @@ export class Board extends React.Component<BoardProps,BoardState>
     private isPressed:boolean;
     private canvas?:HTMLCanvasElement | null;
 
+
+    private currentHeight:number;
+    private currentWidth:number;
+    private prevWindowHeight:number;
+    private prevWindowWidth:number;
+
     constructor(props:BoardProps)
     {
         super(props);
         this.canvasRef = React.createRef<HTMLCanvasElement>();
         this.motionList = [];
         this.isPressed = false;
+        this.currentHeight = FIELD_MIN_HEIGHT; 
+        this.currentWidth = FIELD_MIN_WIDTH;
+        this.prevWindowHeight = 0; 
+        this.prevWindowWidth = 0;
 
         //Bind 'this' to event handler callbacks
         this.onPointerDown = this.onPointerDown.bind(this);
@@ -120,6 +135,12 @@ export class Board extends React.Component<BoardProps,BoardState>
     {
         this.onResize();
         this.canvas = this.canvasRef.current;
+        
+        if(this.canvas)
+        {
+            this.canvas.width = this.currentWidth;
+            this.canvas.height = this.currentHeight;
+        }
         window.addEventListener("resize", this.onResize.bind(this));
     }
 
@@ -167,16 +188,42 @@ export class Board extends React.Component<BoardProps,BoardState>
 
     // Window Events
     onResize(){
+
+
+        
+        //get clamp to aspect ratio based on dominant changed axis
+        let deltaX = Math.abs(this.prevWindowWidth - window.innerWidth);
+        let deltaY = Math.abs( this.prevWindowHeight - window.innerHeight); 
+
+        this.prevWindowWidth = window.innerWidth;
+        this.prevWindowHeight = window.innerHeight;
+
+        let width = (window.innerWidth > FIELD_MIN_WIDTH) ? window.innerWidth : FIELD_MIN_WIDTH;
+        let height = (window.innerHeight > FIELD_MIN_HEIGHT) ? window.innerHeight : FIELD_MIN_HEIGHT;
+
+
+        if(deltaY > deltaX)
+        {
+           //update the width to use the whole window
+           let newWidth = height * IMAGE_ASPECT_RATIO;
+           width = (newWidth > window.innerWidth) ? window.innerWidth : newWidth;
+           height = width * (1/IMAGE_ASPECT_RATIO);
+        }
+        else
+        {
+            let newHeight = width * (1/IMAGE_ASPECT_RATIO);
+            height = (newHeight > window.innerHeight) ? window.innerHeight : newHeight;
+            width = height * IMAGE_ASPECT_RATIO;
+        }
+
+
+        this.currentWidth = width; 
+        this.currentHeight = height; 
+
         if(this.canvas)
         {
-            var fieldMinWidth = 330;  //110 yds x 3
-            var fieldMinHeight = 180; //60 yds x 3
-
-            let width = (window.innerWidth > fieldMinWidth) ? window.innerWidth : fieldMinWidth;
-            let height = (window.innerHeight > fieldMinHeight) ? window.innerHeight : fieldMinHeight;
-
-            this.canvas.width = width;
-            this.canvas.height = height;
+            this.canvas.width =  this.currentWidth;
+            this.canvas.height = this.currentHeight;
             this.draw();
         }
     }
